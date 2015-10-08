@@ -2,7 +2,13 @@ import System.IO
 import System.Environment
 import System.Process
 
-splitSize = 128 * 1024 * 1024
+-- Problems
+-- -------
+--
+-- The files that are to be combined are binary files.
+-- Might require the use of Bytestring package or something similar.
+
+splitSize = 1024 * 1024
 
 download :: String -> IO ()
 download url = do
@@ -12,6 +18,8 @@ download url = do
   putStrLn $ show fileSize
   let splits = ((fromIntegral fileSize) / (fromIntegral splitSize))
       rs = ceiling splits
+      -- Room for parallel download'?
+      -- Note that there is a parallel map function
       xss = map (\x -> download' url x)  [1..rs]
   foldr (>>) (return ()) xss
   combine rs
@@ -20,11 +28,12 @@ download url = do
 
 download' :: String -> Int -> IO ()
 download' url n = do
+  -- will continue work properly?
   system $ "curl -o \"file." ++ (show n) ++ "\" --range " ++ start ++  "-" ++ end ++ " " ++ url
   return ()
     where
       start = show $ n * splitSize
-      end = show $ (n + 1) * splitSize
+      end = show $ ((n + 1) * splitSize - 1)
 
 combine :: Int -> IO ()
 combine n = do
