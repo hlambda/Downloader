@@ -5,6 +5,12 @@
   downloading a file of size smaller than the maximum allowed.  Once
   all the parts are downloaded, these could be combined to get the
   original file.
+* Usage
+  + You need to have Haskell compiler installed.
+  + Execute ~ghc --make -O2 down.hs~ to generate the binary file
+    ~down~.
+  + To download ~example.com/example.iso~, execute ~./down
+    example.com/example.iso~.
 * What next?
 ** Native curl library
    Haskell has a curl library implementation.  Currently, the project
