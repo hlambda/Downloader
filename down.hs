@@ -1,6 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
 import System.IO
 import System.Environment
 import System.Process
+import qualified Data.ByteString as B
 
 -- Problems
 -- -------
@@ -8,7 +10,7 @@ import System.Process
 -- The files that are to be combined are binary files.
 -- Might require the use of Bytestring package or something similar.
 
-splitSize = 1024 * 1024
+splitSize = 128 * 1024 * 1024 -- 128 Mega Bytes
 
 download :: String -> IO ()
 download url = do
@@ -20,36 +22,36 @@ download url = do
       rs = ceiling splits
       -- Room for parallel download'?
       -- Note that there is a parallel map function
-      xss = map (\x -> download' url x)  [1..rs]
+      xss = map (\x -> download' url x fileSize)  [1..rs]
+  putStrLn $ "Number of splits: " ++ (show rs)
   foldr (>>) (return ()) xss
   combine rs
-  putStrLn $ show rs
 
-
-download' :: String -> Int -> IO ()
-download' url n = do
+download' :: String -> Int -> Int -> IO ()
+download' url n tot = do
   -- will continue work properly?
+  -- Corner case? What if we have reached the end?
   system $ "curl -o \"file." ++ (show n) ++ "\" --range " ++ start ++  "-" ++ end ++ " " ++ url
   return ()
     where
-      start = show $ n * splitSize
-      end = show $ ((n + 1) * splitSize - 1)
+      start = show $ (n - 1) * splitSize
+      end = let size = (n * splitSize - 1)
+            in show $ if size > tot then tot else size
 
 combine :: Int -> IO ()
 combine n = do
   let xs = map (\x -> aux x) [1..n]
   all <- foldr (aux') (return "") xs
-  writeFile "file" all  
-      where aux x = readFile $ "file." ++ (show x)
-            aux':: (IO String) -> (IO String) -> (IO String)
+  B.writeFile "file" all  
+      where aux x = B.readFile $ "file." ++ (show x)
             aux' s1 s2 = do
               s1' <- s1
               s2' <- s2
-              let s3 = s1' ++ s2'
+              let s3 = s1' `B.append` s2'
               return s3  
 
 main = do
-  ar <- getArgs
-  putStrLn $ head ar
-  download $ head ar
+  ar <- fmap head $ getArgs
+  putStrLn $ ar
+  download ar
   return ()
