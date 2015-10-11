@@ -10,7 +10,8 @@
   + Execute ~ghc --make -O2 down.hs~ to generate the binary file
     ~down~.
   + To download ~example.com/example.iso~, execute ~./down
-    example.com/example.iso~.
+    example.com/example.iso~. After completion the downloaded file
+    will have the name ~file~.
 * What next?
 ** Native curl library
    Haskell has a curl library implementation.  Currently, the project
