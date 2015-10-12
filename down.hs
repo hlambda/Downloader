@@ -3,6 +3,7 @@ import System.IO
 import System.Environment
 import System.Process
 import Control.Monad
+import Control.Concurrent.Async
 import qualified Data.ByteString as B
 
 splitSize = 128 * 1024 * 1024 -- 128 Mega Bytes
@@ -15,9 +16,8 @@ download url fname = do
   putStrLn $ show fileSize
   let splits = ((fromIntegral fileSize) / (fromIntegral splitSize))
       rs = ceiling splits
-      xss = map (\x -> download' url x fileSize fname)  [1..rs]
   putStrLn $ "Number of splits: " ++ (show rs)
-  foldr (>>) (return ()) xss
+  mapConcurrently (\x -> download' url x fileSize fname) [1..rs]
   combine rs fname
 
 download' :: String -> Int -> Int -> String -> IO ()

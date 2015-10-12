@@ -7,11 +7,15 @@
   original file.
 * Usage
   + You need to have Haskell compiler installed.
-  + Execute ~ghc --make -O2 down.hs~ to generate the binary file
-    ~down~.
+  + Execute the comman ~ghc --make -O2 -threaded down.hs~ to generate
+    the binary file ~down~.
   + To download ~example.com/example.iso~, execute ~./down
     example.com/example.iso~. After completion the downloaded file
     will have the name ~file~.
+
+    Note that the curl is called simultaneously, this shall produce a
+    bizarre output at the prompt; please ignore this (I'm working on
+    it.)
 * What next?
 ** TODO Native curl library
    Haskell has a curl library implementation.  Currently, the project
@@ -22,9 +26,13 @@
    If ~Ctrl-C~ is pressed, the download stops.  But when the download
    is restarted, it simply ignores the already downloaded parts (or
    parts within parts.)  Somehow, this has to be plugged.
-** TODO Support for parallel downloads
+** DONE Support for parallel downloads
+   CLOSED: [2015-10-12 Mon 18:30]
    Currently, the program downloads the file one by one.  There is no
    harm in doing this in parallel.
 ** DONE Filename
    CLOSED: [2015-10-12 Mon 17:53]
    Currently, the file name static; need to make it better.
+** TODO Status of the download
+   Parallelism created problems with output of the curl program.  Need
+   to somehow fix this. 
