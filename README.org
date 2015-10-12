@@ -12,10 +12,10 @@
   + To download ~example.com/example.iso~, execute ~./down
     example.com/example.iso~. After completion the downloaded file
     will have the name ~file~.
-
-    Note that the curl is called simultaneously, this shall produce a
-    bizarre output at the prompt; please ignore this (I'm working on
-    it.)
+    
+    You shall see a bizarre output at the prompt.  This is because
+    that curl is executing in parallel and that the output of all of
+    the aggregates.  For the time being, ignore the output.
 * What next?
 ** TODO Native curl library
    Haskell has a curl library implementation.  Currently, the project
@@ -36,3 +36,9 @@
 ** TODO Status of the download
    Parallelism created problems with output of the curl program.  Need
    to somehow fix this. 
+* Status
+  + [X] Filename.
+  + [X] Parallel IO (support for parallel downloads.)
+  + [ ] Native Curl Library.
+  + [ ] Support for resume (don't know.)
+  + [ ] Current Status of download
