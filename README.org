@@ -13,20 +13,18 @@
     example.com/example.iso~. After completion the downloaded file
     will have the name ~file~.
 * What next?
-** Native curl library
+** TODO Native curl library
    Haskell has a curl library implementation.  Currently, the project
    makes use of curl system calls to do the downloading and other
    stuff.  As a modification, the curl library (implemented by Galios
    Inc) could be used instead of the system calls.
-** Support for resume
+** TODO Support for resume
    If ~Ctrl-C~ is pressed, the download stops.  But when the download
    is restarted, it simply ignores the already downloaded parts (or
    parts within parts.)  Somehow, this has to be plugged.
-** Support for parallel downloads
+** TODO Support for parallel downloads
    Currently, the program downloads the file one by one.  There is no
    harm in doing this in parallel.
-   
-   
-
-** Filename
+** DONE Filename
+   CLOSED: [2015-10-12 Mon 17:53]
    Currently, the file name static; need to make it better.

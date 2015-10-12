@@ -7,22 +7,22 @@ import qualified Data.ByteString as B
 
 splitSize = 128 * 1024 * 1024 -- 128 Mega Bytes
 
-download :: String -> IO ()
-download url = do
+download :: String -> String -> IO ()
+download url fname = do
   system $ "curl -sI " ++ url ++
              " | awk '/Content-Length/ { print $2 }' > /tmp/hacurl"
   fileSize <- fmap (read) $ readFile $ "/tmp/hacurl" :: IO Int
   putStrLn $ show fileSize
   let splits = ((fromIntegral fileSize) / (fromIntegral splitSize))
       rs = ceiling splits
-      xss = map (\x -> download' url x fileSize)  [1..rs]
+      xss = map (\x -> download' url x fileSize fname)  [1..rs]
   putStrLn $ "Number of splits: " ++ (show rs)
   foldr (>>) (return ()) xss
-  combine rs
+  combine rs fname
 
-download' :: String -> Int -> Int -> IO ()
-download' url n tot = do
-  system $ "curl -o \"file." ++ (show n) ++
+download' :: String -> Int -> Int -> String -> IO ()
+download' url n tot fname = do
+  system $ "curl -o \"" ++ fname ++ "." ++ (show n) ++
              "\" --range " ++ start ++  "-" ++ end ++ " " ++ url
   return ()
     where
@@ -30,17 +30,17 @@ download' url n tot = do
       end = let size = (n * splitSize - 1)
             in show $ if size > tot then tot else size
 
-combine :: Int -> IO ()
-combine n = do
+combine :: Int -> String -> IO ()
+combine n fname = do
   let xs = map (\x -> aux x) [1..n]
   all <- foldr (aux') (return "") xs
-  B.writeFile "file" all  
-      where aux x = B.readFile $ "file." ++ (show x)
+  B.writeFile fname all  
+      where aux x = B.readFile $ fname ++  "." ++ (show x)
             aux' :: IO B.ByteString -> IO B.ByteString -> IO B.ByteString
             aux' s1 s2 = liftM2 B.append s1 s2
 
 main = do
   ar <- fmap head $ getArgs
-  putStrLn $ ar
-  download ar
+  let fileName = reverse $ takeWhile (/= '/') $ reverse ar
+  download ar fileName
 
