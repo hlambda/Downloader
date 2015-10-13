@@ -11,11 +11,9 @@
     the binary file ~down~.
   + To download ~example.com/example.iso~, execute ~./down
     example.com/example.iso~. After completion the downloaded file
-    will have the name ~file~.
-    
-    You shall see a bizarre output at the prompt.  This is because
-    that curl is executing in parallel and that the output of all of
-    the aggregates.  For the time being, ignore the output.
+    will have the name ~file~.  The download runs silently (no info
+    will be shown.)
+        
 * What next?
 ** TODO Native curl library
    Haskell has a curl library implementation.  Currently, the project
