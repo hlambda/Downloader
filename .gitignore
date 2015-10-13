@@ -2,3 +2,5 @@
 *.hi
 TAGS
 down
+.cabal-sandbox
+cabal.sandbox.config
